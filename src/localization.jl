@@ -148,7 +148,7 @@ function _points_only(model, img, min_intensity = 0.1, min_point_radius = 1.0)
 end
 
 function _cluster_points_idxs(points, radius)
-    tree = KDTree(points, Euclidean())
+    tree = BallTree(points, Euclidean())
     neighbs = inrange(tree, points, radius)
     edges = LightGraphs.SimpleGraphs.SimpleEdge{Int64}[]
     if !isempty(neighbs)
@@ -250,7 +250,7 @@ end
 
 #TODO: Un-hardcode the offsets here... Should be an option in ImageLocalizer
 function setcover_boxes(proposed_points, l,u, dist_from_center = 5.0, offsets = ((-3,0.0), (3,0.0), (0, 0.25)))
-    t = KDTree(proposed_points, Chebyshev());
+    t = BallTree(proposed_points, Chebyshev());
     box_centers = Tuple{SVector{2,Int64}, Float64}[]
     sizehint!(box_centers, (length(offsets)^2)*length(proposed_points))
     for p in proposed_points
