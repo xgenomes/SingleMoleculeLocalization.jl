@@ -220,6 +220,7 @@ function greedy_set_cover(sets, n, score_offsets = zeros(length(sets)))
 
     set_inds = Int64[]
     covered = Set{Int64}()
+    old_covered = Set{Int64}()
     atoms_to_sets = invert_map(sets, n)
     while true
         isempty(pq) && break
@@ -229,7 +230,6 @@ function greedy_set_cover(sets, n, score_offsets = zeros(length(sets)))
         # Add set index to result.
         push!(set_inds,s_index)
 
-        old_covered = deepcopy(covered)
         # Update covered atoms.
         for i in sets[s_index]
             push!(covered,i)
@@ -244,6 +244,7 @@ function greedy_set_cover(sets, n, score_offsets = zeros(length(sets)))
                 end
             end
         end
+        union!(old_covered, covered)
     end
     set_inds
 end

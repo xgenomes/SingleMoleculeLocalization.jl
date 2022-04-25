@@ -1,7 +1,7 @@
 name = "SingleMoleculeLocalization"
 uuid = "b4411c1f-bf7a-4d9f-b9fb-4bb692c95957"
 authors = ["Nick Boyd <nickboyd@gmail.com>", "Nicholas Bauer <nicholasbauer@outlook.com>"]
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
