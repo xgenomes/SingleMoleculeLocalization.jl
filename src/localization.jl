@@ -246,25 +246,37 @@ function greedy_set_cover(sets, n, score_offsets = zeros(length(sets)))
         end
         union!(old_covered, covered)
     end
-    set_inds
+    sort!(set_inds)
 end
 
 #TODO: Un-hardcode the offsets here... Should be an option in ImageLocalizer
+
 function setcover_boxes(proposed_points, l,u, dist_from_center = 5.0, offsets = ((-3,0.0), (3,0.0), (0, 0.25)))
     t = BallTree(proposed_points, Chebyshev());
-    box_centers = Tuple{SVector{2,Int64}, Float64}[]
-    sizehint!(box_centers, (length(offsets)^2)*length(proposed_points))
+    # allocate vector with box centers and offset
+    boxes = SVector{2, Int64}[]
+    scores = Float64[]
+    boxcount = length(proposed_points) * length(offsets) ^ 2
+    sizehint!(boxes, boxcount)
+    sizehint!(scores, boxcount)
     for p in proposed_points
         for (x,s_x) in offsets, (y,s_y) in offsets
             center = _point_to_px(p + SVector(x,y))
             if all(l .< center .< u )
-                push!(box_centers, (center, s_x+s_y))
+                push!(boxes, center)
+                push!(scores, s_x+s_y)
             end
         end
     end
-    ir = inrange(t, first.(box_centers), dist_from_center)
-    # the lengths here should be at least 1 by construction, no?
-    filtered = [(f,s,x) for ((f,s),x) in zip(box_centers,ir) if length(x) > 0]
-    boxes, subsets, scores = first.(filtered), getindex.(filtered,3), getindex.(filtered,2)
-    boxes[greedy_set_cover(subsets, length(proposed_points),scores)]
+    
+    subsets = inrange(t, boxes, dist_from_center)      # allocate vector with box centers, then a new vector for every box center
+    if any(x -> length(x) == 0, subsets)
+        # all boxes should have neighbors at this point, by construction, but preserving just in case
+        isinrange = length(subsets) .> 0
+        keepat!(boxes, isinrange)
+        keepat!(scores, isinrange)
+        keepat!(subsets, isinrange)
+    end
+    
+    keepat!(boxes, greedy_set_cover(subsets, length(proposed_points), scores))
 end
