@@ -253,7 +253,6 @@ end
 
 function setcover_boxes(proposed_points, l,u, dist_from_center = 5.0, offsets = ((-3,0.0), (3,0.0), (0, 0.25)))
     t = BallTree(proposed_points, Chebyshev());
-    # allocate vector with box centers and offset
     boxes = SVector{2, Int64}[]
     scores = Float64[]
     boxcount = length(proposed_points) * length(offsets) ^ 2
@@ -269,7 +268,7 @@ function setcover_boxes(proposed_points, l,u, dist_from_center = 5.0, offsets = 
         end
     end
     
-    subsets = inrange(t, boxes, dist_from_center)      # allocate vector with box centers, then a new vector for every box center
+    subsets = inrange(t, boxes, dist_from_center)
     if any(x -> length(x) == 0, subsets)
         # all boxes should have neighbors at this point, by construction, but preserving just in case
         isinrange = length(subsets) .> 0
