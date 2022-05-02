@@ -271,11 +271,13 @@ function setcover_boxes(proposed_points, l,u, dist_from_center = 5.0, offsets = 
     subsets = inrange(t, boxes, dist_from_center)
     if any(x -> length(x) == 0, subsets)
         # all boxes should have neighbors at this point, by construction, but preserving just in case
-        isinrange = length(subsets) .> 0
-        keepat!(boxes, isinrange)
-        keepat!(scores, isinrange)
-        keepat!(subsets, isinrange)
+        isinrange_i = i -> length(subsets[i]) > 0
+        filterat!(isinrange_i, boxes)
+        filterat!(isinrange_i, scores)
+        filter!(x -> length(x) > 0, subsets)
     end
     
     keepat!(boxes, greedy_set_cover(subsets, length(proposed_points), scores))
 end
+
+filterat!(f, a) = keepat!(a, (i for i ∈ eachindex(a) if f(i)))
