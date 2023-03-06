@@ -5,7 +5,7 @@ export ImageLocalizer, PatchLocalizer, ForwardModel, PointSource, LMO, SquaredLo
 using LinearAlgebra
 using DataStructures
 using NearestNeighbors
-using LightGraphs
+using Graphs
 using StaticArrays
 using NLopt
 import ImageFiltering

@@ -150,7 +150,7 @@ end
 function _cluster_points_idxs(points, radius)
     tree = BallTree(points, Euclidean())
     neighbs = inrange(tree, points, radius)
-    edges = LightGraphs.SimpleGraphs.SimpleEdge{Int64}[]
+    edges = Graphs.SimpleGraphs.SimpleEdge{Int64}[]
     if !isempty(neighbs)
         sizehint!(edges, sum(length, neighbs))
     end
@@ -279,5 +279,8 @@ function setcover_boxes(proposed_points, l,u, dist_from_center = 5.0, offsets = 
     
     keepat!(boxes, greedy_set_cover(subsets, length(proposed_points), scores))
 end
+<<<<<<< HEAD
 
 filterat!(f, a) = keepat!(a, (i for i ∈ eachindex(a) if f(i)))
+=======
+>>>>>>> 93cc2d2 (Migrate from LightGraphs to Graphs)
